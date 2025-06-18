@@ -1,19 +1,36 @@
-# Please install OpenAI SDK first: `pip3 install openai`
 import os
-from openai import OpenAI
-from dotenv import load_dotenv
-
+from dotenv import load_dotenv, find_dotenv
 load_dotenv()
+openai_api_key = os.getenv("OPENAITOKEN")
 
-client = OpenAI(api_key=os.getenv("DEEPSEKTOKEN"), base_url="https://api.deepseek.com")
+from langchain_openai import ChatOpenAI
 
-response = client.chat.completions.create(
-    model="deepseek-chat",
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant"},
-        {"role": "user", "content": "Hello"},
-    ],
-    stream=False
-)
+chatModel = ChatOpenAI(model="gpt-3.5")
 
-print(response.choices[0].message.content)
+from langchain_community.document_loaders import TextLoader
+from langchain_openai import OpenAIEmbeddings
+from langchain_text_splitters import CharacterTextSplitter
+from langchain_chroma import Chroma
+
+# Load the document, split it into chunks, embed each chunk and load it into the vector store.
+loaded_document = TextLoader('./data/state_of_the_union.txt').load()
+
+text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+
+chunks_of_text = text_splitter.split_documents(loaded_document)
+
+vector_db = Chroma.from_documents(chunks_of_text, OpenAIEmbeddings())
+
+question = "What did the president say about the John Lewis Voting Rights Act?"
+
+response = vector_db.similarity_search(question)
+
+print("\n----------\n")
+
+print("Ask the RAG App: What did the president say about the John Lewis Voting Rights Act?")
+
+print("\n----------\n")
+print(response[0].page_content)
+
+print("\n----------\n")
+
