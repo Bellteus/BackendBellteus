@@ -14,7 +14,6 @@ from deepgram import (
 # Carga las variables de entorno desde el archivo .env
 load_dotenv()
 
-ARCHIVO_AUDIO = "Audios/1512355.mp3"
 
 def Transcripcion_Audio(ARCHIVO_AUDIO):
     try:
