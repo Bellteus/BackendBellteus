@@ -1,4 +1,7 @@
 # Archivos de Python
 __pycache__/
 *.py[cod]
-*$py.class
+*$py.class 
+# Archivos de distribución
+*.egg-info/
+dist/

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from routers.audios_route import router as audio_router
 from routers.auth_route import router as auth_router
-from routers.reporteAnalisisArea_route import router as reporteAnalisisArea_router
+from routers.reporteAnalisisCliente_route import router as reporteAnalisisArea_router
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware  # 👈 importa esto
 

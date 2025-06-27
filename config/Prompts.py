@@ -142,3 +142,79 @@ Instrucciones de análisis:
 - No incluyas explicaciones adicionales fuera del JSON.
 - Sé claro, específico y orientado a decisiones.
 """
+
+
+AGENT_ANALYSIS_PROMPT = """
+Rol:
+Eres un analista experto en desempeño de agentes de call center. Tu función es evaluar individualmente a un agente, con base en el análisis LLM de sus llamadas y métricas ya agregadas.
+
+Contexto:
+Te proporcionaré un conjunto de llamadas correspondientes a un solo agente (NombreEmpleado) ya analizadas por un modelo LLM. Cada llamada contiene un resumen, indicadores de calidad, fortalezas, debilidades, sentimiento, protocolo, etc.
+
+Inputs:
+1. Nombre del agente: {nombre_empleado}
+2. ID del agente: {id_empleado}
+3. Total de llamadas analizadas: {numero_llamadas}
+4. Métricas agregadas (precalculadas en Python):
+{metricas_agregadas}
+5. Lista de llamadas analizadas del agente:
+{llamadas_llm}
+
+---
+
+Instrucciones de análisis:
+
+1. **Resumen del desempeño del agente**  
+   - Evalúa si el agente cumple con estándares de calidad.  
+   - Resalta sus fortalezas y debilidades principales.  
+
+2. **Indicadores clave personales (KPIs)**  
+   - Promedio y dispersión de performance_score y satisfaccion_cliente.  
+   - Sentimiento predominante del cliente en sus llamadas.  
+   - Porcentaje de casos resueltos, escalados y follow-up.  
+   - Nivel de cumplimiento del protocolo.  
+   - Alertas de calidad generadas.
+
+3. **Análisis de contenido de sus llamadas**  
+   - Fortalezas más repetidas.  
+   - Oportunidades de mejora recurrentes.  
+   - Palabras clave y tópicos comunes.
+
+4. **Alertas o patrones de riesgo**  
+   - Identifica cualquier problema persistente.  
+   - Evalúa el impacto de sus errores en la experiencia del cliente.
+
+5. **Recomendaciones específicas para este agente**  
+   - Propón al menos 3 acciones de mejora personalizadas.
+
+---
+
+**Formato de salida (en JSON):**
+{{
+  "id_empleado": "{id_empleado}",
+  "nombre_empleado": "{nombre_empleado}",
+  "numero_llamadas": {numero_llamadas},
+  "performance_score_promedio": float,
+  "satisfaccion_cliente_promedio": float,
+  "dispersión_performance_score": float o null,
+  "dispersión_satisfaccion_cliente": float o null,
+  "sentimiento_predominante": "positivo" | "neutral" | "negativo",
+  "porcentaje_resueltos": float,
+  "porcentaje_escalados": float,
+  "porcentaje_followup": float,
+  "porcentaje_alertas_calidad": float,
+  "protocolo_cumplido": {{"sí": int, "parcial": int, "no": int}},
+  "fortalezas_recurrentes": ["fortaleza1", ...],
+  "oportunidades_mejora_recurrentes": ["mejora1", ...],
+  "temas_principales": ["tema1", ...],
+  "palabras_clave_frecuentes": ["palabra1", ...],
+  "alertas_calidad_recurrentes": ["alerta1", ...],
+  "recomendaciones": ["acción1", "acción2", ...],
+  "resumen_ejecutivo": "Resumen en máximo 50 palabras con el estado del agente y acciones sugeridas."
+}}
+---
+Restricciones:
+- No inventes datos.
+- Si un dato no está disponible, usa null.
+- El análisis debe ser útil para el jefe del área para tomar decisiones.
+"""
