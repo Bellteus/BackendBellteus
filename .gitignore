@@ -5,3 +5,13 @@ __pycache__/
 # Archivos de distribución
 *.egg-info/
 dist/
+
+# Archivos de configuración de entornos virtuales
+.venv/
+# Archivos de configuración de IDEs
+.idea/
+
+#archivo .env
+.env
+# Archivos de caché
+*.cache
