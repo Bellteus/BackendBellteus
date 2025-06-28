@@ -167,4 +167,22 @@ def Mostrar_AnalisisAgente(Agente: str, fecha_inicio: str, fecha_fin: str) -> Li
 
     except Exception as e:
         print(f"Error al mostrar análisis del agente: {str(e)}")
-        raise HTTPException(status_code=500, detail="Error al procesar la solicitud de análisis del agente")
+        raise HTTPException(status_code=500, detail="Error al procesar la solicitud de análisis del agente.")
+    
+
+
+def ObtenerReporteAnalisisAgenteporID(id:str) ->AnalisisAgenteSchema:
+    try:
+        client = get_mongo_client()
+        db = client["CALLCENTER-MONGODB"]
+        collection = db["Agente-Performance"]
+
+        resultado = list(collection.find({
+            "_id": id}))
+        if not resultado:
+            print(f"No se encontraron registors con ese id")
+            raise HTTPException(status_code=404,detail="Error al procesar la solicitud de analisis del agente.")
+        return AnalisisAgenteSchema(**resultado[0])
+    except Exception as e:
+        print(f"Error al mostrar análisis del agente: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error al procesar la solicitud de análisis del agente.")

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query, Depends
 from typing import Optional, List
 from datetime import datetime, timezone  # Añade timezone al import
-from service.reporteAnalisisCliente_service import buscar_Todos_ReporteAnalisis_service,Analizar_llamada_por_Area
+from service.reporteAnalisisCliente_service import buscar_Todos_ReporteAnalisis_service,Analizar_llamada_por_Area,ObtenerReporteAnalisisClienteporID
 from models.reporteAnalisisClienteModel import ReporteAnalisisSchema
 router = APIRouter()
 
@@ -35,6 +35,22 @@ def Agregar_ReporteAnalis_Cliente(
     )
 
     except ValueError:
+        raise HTTPException(
+            status_code=400,
+            detail="Formato de fecha inválido. Usa formato DD-MM-YYYY"
+        )
+    
+@router.get("/reporteAnalisisArea/{id}",response_model=ReporteAnalisisSchema)
+def mostrar_reporteAnalisisAgentebyId(id:str)-> ReporteAnalisisSchema :
+      """
+    Endpoint para mostrar análisis de un CLIENTE por Id.
+        """
+      try:
+        return ObtenerReporteAnalisisClienteporID(
+             id
+        )
+    
+      except ValueError:
         raise HTTPException(
             status_code=400,
             detail="Formato de fecha inválido. Usa formato DD-MM-YYYY"

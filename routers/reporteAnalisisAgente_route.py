@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter,HTTPException
 from typing import List
 from models.reporteAnalisisAgenteModel import AnalisisAgenteSchema
-from service.reporteAnalisisAgente_service import Analizar_llamada_por_Agente,Mostrar_AnalisisAgente
+from service.reporteAnalisisAgente_service import Analizar_llamada_por_Agente,Mostrar_AnalisisAgente,ObtenerReporteAnalisisAgenteporID
 
 router=APIRouter()
 @router.post("/reporteAnalisisAgente", response_model=AnalisisAgenteSchema)
@@ -58,3 +58,19 @@ def mostrar_analisis_agente(
         )
     
 
+@router.get("/reporteAnalisisAgente/{id}",response_model=AnalisisAgenteSchema)
+def mostrar_reporteAnalisisAgentebyId(id:str)-> AnalisisAgenteSchema :
+      """
+    Endpoint para mostrar análisis de un agente por Id.
+        """
+      try:
+        return ObtenerReporteAnalisisAgenteporID(
+             id
+        )
+    
+      except ValueError:
+        raise HTTPException(
+            status_code=400,
+            detail="Formato de fecha inválido. Usa formato DD-MM-YYYY"
+        )
+    

@@ -28,4 +28,4 @@ app.include_router(audio_router, tags=["Audios"])
 app.include_router(reporteAnalisisArea_router, tags=["Reporte Analisis Cliente"])
 app.include_router(reporteAnalisisAgente_router, tags=["Reporte Analisis Agente"])
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8002)
+    uvicorn.run("main:app", host="0.0.0.0", port=8001)

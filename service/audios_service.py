@@ -88,6 +88,7 @@ def reporteria_service(
         }
     }
     
+    
     # Añadir filtros opcionales
     if Cliente is not None:
         query["Cliente"] = Cliente
