@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from routers.audios_route import router as audio_router
 from routers.auth_route import router as auth_router
 from routers.reporteAnalisisCliente_route import router as reporteAnalisisArea_router
+from routers.reporteAnalisisAgente_route import router as reporteAnalisisAgente_router
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware  # 👈 importa esto
 
@@ -25,5 +26,6 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 app.include_router(audio_router, tags=["Audios"])
 app.include_router(reporteAnalisisArea_router, tags=["Reporte Analisis Cliente"])
+app.include_router(reporteAnalisisAgente_router, tags=["Reporte Analisis Agente"])
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run("main:app", host="0.0.0.0", port=8001)

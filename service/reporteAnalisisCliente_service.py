@@ -158,3 +158,21 @@ def Analizar_llamada_por_Area(Area,fecha_inicio,fecha_fin) -> ReporteAnalisisSch
             print("No se pudo extraer un JSON válido de la respuesta de la IA.")
     finally:
         client.close()
+
+
+
+def ObtenerReporteAnalisisClienteporID(id:str) ->ReporteAnalisisSchema:
+    try:
+        client = get_mongo_client()
+        db = client["CALLCENTER-MONGODB"]
+        collection = db["Cliente-Performance"]
+
+        resultado = list(collection.find({
+            "_id": id}))
+        if not resultado:
+            print(f"No se encontraron registors con ese id")
+            raise HTTPException(status_code=404,detail="Error al procesar la solicitud de analisis del agente.")
+        return ReporteAnalisisSchema(**resultado[0])
+    except Exception as e:
+        print(f"Error al mostrar análisis del agente: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error al procesar la solicitud de análisis del agente.")

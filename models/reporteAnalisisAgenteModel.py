@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List, Dict
 
 class ProtocoloCumplidoSchema(BaseModel):
@@ -7,6 +7,7 @@ class ProtocoloCumplidoSchema(BaseModel):
     no: Optional[int]
 
 class AnalisisAgenteSchema(BaseModel):
+    _id:str
     id_empleado: str
     nombre_empleado: Optional[str]
     numero_llamadas: Optional[int]
@@ -27,7 +28,8 @@ class AnalisisAgenteSchema(BaseModel):
     alertas_calidad_recurrentes: Optional[List[str]]
     recomendaciones: Optional[List[str]]
     resumen_ejecutivo: Optional[str]
-    _id: Optional[str]
     fecha_inicio_busqueda: Optional[str]
     fecha_fin_busqueda: Optional[str]
     DateTime_realizado: Optional[str]
+
+AnalisisAgenteSchema.model_rebuild()

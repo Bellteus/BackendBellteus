@@ -120,14 +120,14 @@ def Analizar_llamada_por_Agente(Agente, fecha_inicio, fecha_fin) -> AnalisisAgen
 
         doc = {
             **analisis_dict,
-            "_id": f"{Agente}_{datetime.now():%Y%m%d%H%M%S}",
+            "_id": f"{IdEmpleado}_{datetime.now():%Y%m%d%H%M%S}",
             "fecha_inicio_busqueda": fecha_inicio_str,
             "fecha_fin_busqueda":   fecha_fin_str,
             "DateTime_realizado":    datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         }
         # 3) Insertar en MongoDB
         try:
-            collectionAnalisisResultado = db["Cliente-Performance"]
+            collectionAnalisisResultado = db["Agente-Performance"]
             result = collectionAnalisisResultado.insert_one(doc)
             print(f"Análisis agregado con id de Mongo: {result.inserted_id}")
         except Exception as e:
@@ -147,10 +147,42 @@ def Analizar_llamada_por_Agente(Agente, fecha_inicio, fecha_fin) -> AnalisisAgen
         print(f"Error al analizar por agente: {str(e)}")
         raise HTTPException(status_code=500, detail="Error al procesar análisis por agente")
 
-if __name__ == "__main__":
-    # Ejemplo de uso
-    fecha_inicio = datetime(2025, 1, 1)
-    fecha_fin = datetime(2026, 12, 31)
-    agente = "CORDOVA OJEDA VALERIA MICOL"
-    resultado = Analizar_llamada_por_Agente(agente, fecha_inicio, fecha_fin)
-    print(resultado)
+def Mostrar_AnalisisAgente(Agente: str, fecha_inicio: str, fecha_fin: str) -> List[AnalisisAgenteSchema]:
+    try:
+        client = get_mongo_client()
+        db = client["CALLCENTER-MONGODB"]
+        collection = db["Agente-Performance"]
+
+        analisis_list = list(collection.find({
+            "nombre_empleado": Agente,
+            "DateTime_realizado": {"$gte": fecha_inicio.strftime('%Y-%m-%d %H:%M:%S')},
+            "DateTime_realizado": {"$lte": fecha_fin.strftime('%Y-%m-%d %H:%M:%S')}
+        }))
+
+        if not analisis_list:
+            print(f"No se encontraron análisis para el agente '{Agente}' en el rango de fechas proporcionado.")
+            return []
+
+        return [AnalisisAgenteSchema(**item) for item in analisis_list]
+
+    except Exception as e:
+        print(f"Error al mostrar análisis del agente: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error al procesar la solicitud de análisis del agente.")
+    
+
+
+def ObtenerReporteAnalisisAgenteporID(id:str) ->AnalisisAgenteSchema:
+    try:
+        client = get_mongo_client()
+        db = client["CALLCENTER-MONGODB"]
+        collection = db["Agente-Performance"]
+
+        resultado = list(collection.find({
+            "_id": id}))
+        if not resultado:
+            print(f"No se encontraron registors con ese id")
+            raise HTTPException(status_code=404,detail="Error al procesar la solicitud de analisis del agente.")
+        return AnalisisAgenteSchema(**resultado[0])
+    except Exception as e:
+        print(f"Error al mostrar análisis del agente: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error al procesar la solicitud de análisis del agente.")

@@ -26,8 +26,8 @@ class AnalisisLLMSchema(BaseModel):
 
 class AudioMongoSchema(BaseModel):
     id: str = Field(None, description="ID MongoDB",alias='_id')
-    audio_file: str
-    CallId: int
+    audio_file: Optional[str]= None
+    CallId: Optional[int]= None
     FechaHoraInicio: Optional[datetime] = None  # Cambiar date por datetime
     FechaHoraFin: Optional[datetime] = None
     ANI: Optional[float] = None
@@ -42,3 +42,17 @@ class AudioMongoSchema(BaseModel):
     class Config:
         from_attributes = True
         populate_by_name = True
+
+
+class MetadataAudioReporteriaMongoSchema(BaseModel):
+    id: str = Field(None, description="ID MongoDB",alias='_id')
+    audio_file: Optional[str]= None
+    CallId: Optional[int]= None
+    FechaHoraInicio: Optional[datetime] = None  # Cambiar date por datetime
+    FechaHoraFin: Optional[datetime] = None
+    ANI: Optional[float] = None
+    CallDirection: Optional[str] = None
+    Cliente: Optional[str] = None
+    NombreArea: Optional[str] = None
+    IdEmpleado: Optional[str] = None
+    NombreEmpleado: Optional[str] = None
