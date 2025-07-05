@@ -13,12 +13,15 @@ def hash_password(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes=30)):
     to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=60))
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, "MONGO-BELLTEUS", algorithm="HS256")
-    return encoded_jwt
+
+    expire = datetime.utcnow() + expires_delta
+    to_encode.update({
+        "exp": expire.isoformat()  # <- convertir a string
+    })
+
+    return jwt.encode(to_encode, "MONGO-BELLTEUS", algorithm="HS256")
 
 def decode_token(token: str):
     try:

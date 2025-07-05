@@ -14,6 +14,7 @@ def buscar_audios_service(
     Cliente: Optional[str] = None,
     NombreArea: Optional[str] = None,
     IdEmpleado: Optional[str] = None,
+    NombreEmpleado:Optional[str]=None
 ) -> List[AudioMongoSchema]:
     """
     Busca audios en MongoDB filtrando por rango de fechas (obligatorio) y otros criterios opcionales.
@@ -47,6 +48,8 @@ def buscar_audios_service(
         query["NombreArea"] = NombreArea
     if IdEmpleado is not None:
         query["IdEmpleado"] = IdEmpleado
+    if NombreEmpleado is not None:
+        query["NombreEmpleado"]=NombreEmpleado
     
     # Ejecutar consulta
     audios = list(collection.find(query))
@@ -72,48 +75,4 @@ def buscar_audios_por_id(id: str) -> Optional[AudioMongoSchema]:
         return AudioMongoSchema(**audio)
     return  HTTPException(status_code=404, detail="Audio no encontrado")
 
-def reporteria_service(
-    FechaHoraInicio: datetime,  # Sin valor por defecto = obligatorio
-    fechafin: datetime,         # Sin valor por defecto = obligatorio
-    Cliente: Optional[str] = None,
-    NombreArea: Optional[str] = None,
-    IdEmpleado: Optional[str] = None,
-) -> List[MetadataAudioReporteriaMongoSchema]:
-    print("Reporteria----")
-     # Construcción del query
-    query = {
-        "FechaHoraInicio": {
-            "$gte": FechaHoraInicio,
-            "$lte": fechafin
-        }
-    }
-    
-    
-    # Añadir filtros opcionales
-    if Cliente is not None:
-        query["Cliente"] = Cliente
-    if NombreArea is not None:
-        query["NombreArea"] = NombreArea
-    if IdEmpleado is not None:
-        query["IdEmpleado"] = IdEmpleado
 
-    # Ejecutar consulta
-    audios = list(collection.find(query) )
-    print(audios)
-
-    if not audios:
-        raise HTTPException(
-            status_code=404, 
-            detail="No se encontraron audios con los criterios especificados"
-        )
-    
-    # Procesar resultados
-    resultados = []
-    for audio in audios:
-        try:
-            resultados.append(MetadataAudioReporteriaMongoSchema(**audio))
-        except Exception as e:
-            print(f"Error procesando documento: {e}")
-            continue
-    
-    return resultados

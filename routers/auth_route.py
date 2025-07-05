@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
-from schemas.userSchema import UserCreate, UserLogin, LoginResponse, UserPublic,UserCreateResponse
+from fastapi.encoders import jsonable_encoder
+from models.userModel import UserCreate, UserLogin, LoginResponse, UserPublic,UserCreateResponse
 from service.auth_service import create_user, authenticate_user
 from config.security import create_access_token
 
@@ -21,7 +22,7 @@ def login(user_login: UserLogin):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Credenciales inválidas"
         )
-    token = create_access_token({"email": user.email, "role": user.role})
+    token = create_access_token(jsonable_encoder(user))  # <- convierte todo a JSON válido
     return {
         "message": "Login exitoso",
         "access_token": token,

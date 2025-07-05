@@ -1,7 +1,6 @@
 from config.mongodb import get_mongo_client
 from config.security import hash_password, verify_password
-from models.userModel import UserInDB
-from schemas.userSchema import UserCreate, UserLogin, UserPublic
+from models.userModel import UserInDB,UserCreate, UserLogin, UserPublic
 from fastapi import HTTPException, status
 from typing import Optional
 from datetime import datetime
@@ -12,6 +11,7 @@ user_collection = mongo["CALLCENTER-MONGODB"]["users"]
 def get_user(email: str) -> Optional[UserInDB]:
     user_db = user_collection.find_one({"email": email})
     if user_db:
+        user_db["_id"] = str(user_db["_id"])  # <-- convertir antes
         return UserInDB(**user_db)
     return None
 
@@ -42,10 +42,10 @@ def authenticate_user(user_login: UserLogin) -> Optional[UserPublic]:
     user_db = get_user(user_login.email)
     if not user_db or not verify_password(user_login.password, user_db.hashed_password):
         return None
-
     return UserPublic(
-        email=user_db.email,
-        role=user_db.role,
-        is_active=user_db.is_active,
-        created_at=user_db.created_at
-    )
+    id=user_db.id,
+    email=user_db.email,
+    role=user_db.role,
+    is_active=user_db.is_active,
+    created_at=user_db.created_at
+)

@@ -87,7 +87,7 @@ def Analizar_llamada_por_Area(Area,fecha_inicio,fecha_fin) -> ReporteAnalisisSch
         # Si no hay análisis, retornar un mensaje
         if not analisis_llm_list:
             print(f"No se encontraron análisis para el área '{Area}' en el rango de fechas proporcionado.")
-            return
+            raise HTTPException(status_code=404,detail=f"No se encontraron registros con el nombre de cliente {Area}")
 
         # Extraer análisis
         df_analysis = pd.DataFrame([d['ANALISIS_LLM'] for d in analisis_llm_list])
