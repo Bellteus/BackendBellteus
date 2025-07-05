@@ -5,7 +5,7 @@ from routers.reporteAnalisisCliente_route import router as reporteAnalisisArea_r
 from routers.reporteAnalisisAgente_route import router as reporteAnalisisAgente_router
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware  # 👈 importa esto
-
+from routers.log_route import router as log_router
 app = FastAPI()
 origins = [
     "http://localhost:5173",         # frontend local
@@ -27,5 +27,7 @@ app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 app.include_router(audio_router, tags=["Audios"])
 app.include_router(reporteAnalisisArea_router, tags=["Reporte Analisis Cliente"])
 app.include_router(reporteAnalisisAgente_router, tags=["Reporte Analisis Agente"])
+app.include_router(log_router, tags=["Logs"])
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8001)
