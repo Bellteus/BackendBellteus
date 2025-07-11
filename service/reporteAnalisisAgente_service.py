@@ -147,17 +147,29 @@ def Analizar_llamada_por_Agente(Agente, fecha_inicio, fecha_fin) -> AnalisisAgen
         print(f"Error al analizar por agente: {str(e)}")
         raise HTTPException(status_code=500, detail="Error al procesar análisis por agente")
 
-def Mostrar_AnalisisAgente(Agente: str, fecha_inicio: str, fecha_fin: str) -> List[AnalisisAgenteSchema]:
+def Mostrar_AnalisisAgente(Agente: str, fecha_inicio: datetime, fecha_fin: datetime) -> List[AnalisisAgenteSchema]:
     try:
         client = get_mongo_client()
         db = client["CALLCENTER-MONGODB"]
         collection = db["Agente-Performance"]
 
-        analisis_list = list(collection.find({
-            "nombre_empleado": Agente,
-            "DateTime_realizado": {"$gte": fecha_inicio.strftime('%Y-%m-%d %H:%M:%S')},
-            "DateTime_realizado": {"$lte": fecha_fin.strftime('%Y-%m-%d %H:%M:%S')}
-        }))
+        fecha_inicio_str = fecha_inicio.strftime('%Y-%m-%d %H:%M:%S')
+        fecha_fin_str = fecha_fin.strftime('%Y-%m-%d %H:%M:%S')
+
+        filtro = {
+            "DateTime_realizado": {
+                "$gte": fecha_inicio_str,
+                "$lte": fecha_fin_str
+            }
+        }
+        if Agente and Agente != "TODOS":
+            filtro["nombre_empleado"] = Agente
+
+        print(f"[DEBUG] Filtro usado:", filtro)
+
+        analisis_list = list(collection.find(filtro))
+
+        print(f"[DEBUG] Resultados encontrados: {len(analisis_list)}")
 
         if not analisis_list:
             print(f"No se encontraron análisis para el agente '{Agente}' en el rango de fechas proporcionado.")
@@ -168,6 +180,10 @@ def Mostrar_AnalisisAgente(Agente: str, fecha_inicio: str, fecha_fin: str) -> Li
     except Exception as e:
         print(f"Error al mostrar análisis del agente: {str(e)}")
         raise HTTPException(status_code=500, detail="Error al procesar la solicitud de análisis del agente.")
+
+
+
+
     
 
 
