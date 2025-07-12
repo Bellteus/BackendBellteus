@@ -10,6 +10,7 @@ app = FastAPI()
 origins = [
     "http://localhost:5173",         # frontend local
     "http://127.0.0.1:5173",         # otra posible IP local
+    "https://backendbellteus-production-507e.up.railway.app",  # frontend en producción
     "*"  # 👈 solo para pruebas, permite todo. Evítalo en producción.
 ]
 
