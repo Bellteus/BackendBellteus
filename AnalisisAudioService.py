@@ -1,6 +1,5 @@
 import os
 import json
-from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from config.mongodb import get_mongo_client
 from config.Prompts import ANALYSIS_PROMPT_TEMPLATE

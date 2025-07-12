@@ -1,6 +1,5 @@
 from datetime import datetime
-from fastapi import APIRouter, Depends, status
-from sqlmodel import Session, select
+from fastapi import APIRouter, status
 from typing import List
 from config.mongodb import get_mongo_client
 from models.logsModel import ActionLog
