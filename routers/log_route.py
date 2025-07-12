@@ -4,8 +4,6 @@ from sqlmodel import Session, select
 from typing import List
 from config.mongodb import get_mongo_client
 from models.logsModel import ActionLog
-from db.SQL_connection import get_session   # <-- Usa tu función, no la de huggingface
-
 router = APIRouter()
 
 mongo = get_mongo_client()
